@@ -496,6 +496,24 @@ public class ClassFileReaderTest_1_8 extends AbstractRegressionTest {
 		);
 	}
 
+	public void testGH12345() throws Exception {
+		String source = """
+				public class X {
+					public void test(java.util.List l) {
+					}
+				}
+				""";
+
+			org.eclipse.jdt.internal.compiler.classfmt.ClassFileReader cfr = getInternalClassFile("", "X", "X", source);
+
+			IBinaryMethod method = getMethod(cfr,"test");
+			assertNotNull(method);
+			assertEquals(method.getParameterCount(), 1);
+			char[][] argumentNames = method.getArgumentNames();
+			assertEquals(argumentNames.length, 1);
+			assertEquals(new String(argumentNames[0]), "l");
+	}
+
 	/**
 	 * Produce a nicely formatted type annotation for testing. Exercises the API for type annotations.
 	 * Output examples:<br>
